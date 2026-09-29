@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sahne | Pars Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b12;--p:#10182a;--line:rgba(255,255,255,.08);--t:#e8eef8;--m:#8b9bb4;--a:#f5c15d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0,rgba(90,167,255,.16),transparent 30%),var(--bg);color:var(--t);font-family:"IBM Plex Sans",sans-serif}
+.wrap{width:min(1080px,calc(100% - 28px));margin:auto;padding:28px 0 70px}
+header{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+h1{margin:0;font-size:28px}.sub{color:var(--m)}
+.btn,select{background:var(--p);border:1px solid var(--line);color:var(--t);border-radius:10px;padding:9px 12px}
+.btn{cursor:pointer;font-weight:700;text-decoration:none}.pri{background:#16477d;border-color:#2b5d93}
+.hero{border:1px solid var(--line);border-radius:22px;padding:28px;background:linear-gradient(120deg,#14233c,#10182a 55%,#1a1630);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:linear-gradient(180deg,#121b2e,#0e1626);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column}
+.tag{font-size:11px;color:var(--a);font-weight:700}
+.price{font-family:"IBM Plex Mono",monospace;font-size:18px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:20px}
+.box{width:min(420px,100%);background:#10182a;border:1px solid var(--line);border-radius:18px;padding:22px}
+.hidden{display:none}
+</style></head>
+<body>
+<div class="wrap">
+  <header><div><div class="tag">PARS SAHNE</div><h1>Etkinlik vitrini</h1><p class="sub">Konser, sahne ve soylesi. Bilet satisi demo.</p></div>
+  <div><select id="sehir" onchange="ciz()"><option>Tumu</option><option>Istanbul</option><option>Ankara</option><option>Izmir</option></select>
+  <a class="btn" href="https://ermetasarim.github.io/projeler/">Portfoy</a></div></header>
+  <div class="hero"><div class="tag">ONE CIKAN</div><h2 style="margin:8px 0 6px">Gece Vardiyasi</h2>
+    <p class="sub">12 Ekim - Zorlu PSM, Istanbul</p>
+    <button class="btn pri" onclick="al(0)">On satis - 890 TL</button></div>
+  <div class="grid" id="box"></div>
+</div>
+<div id="m" class="modal hidden" onclick="if(event.target.id==='m')kapat()">
+  <div class="box"><h3 id="mt"></h3><p class="sub" id="md"></p>
+    <label class="sub">Adet</label>
+    <select id="adet"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+    <p>Toplam <b class="price" id="top"></b></p>
+    <button class="btn pri" onclick="onay()">Rezervasyonu simule et</button>
+    <p class="sub" id="ok"></p></div>
+</div>
+<script>
+const E=[
+  {ad:"Gece Vardiyasi",yer:"Zorlu PSM",sehir:"Istanbul",tarih:"12 Eki 2026",saat:"21:00",fiyat:890,tur:"Konser"},
+  {ad:"Kis Masali",yer:"AKM",sehir:"Istanbul",tarih:"3 Kas 2026",saat:"20:00",fiyat:420,tur:"Tiyatro"},
+  {ad:"Acik Veri Soylesisi",yer:"ODTU Kultur",sehir:"Ankara",tarih:"18 Eki 2026",saat:"18:30",fiyat:0,tur:"Soylesi"},
+  {ad:"Sahil Jazz Gecesi",yer:"Kulturpark",sehir:"Izmir",tarih:"25 Eki 2026",saat:"19:00",fiyat:350,tur:"Konser"},
+  {ad:"Kisa Film Gecesi",yer:"Beyoglu Sinemasi",sehir:"Istanbul",tarih:"7 Kas 2026",saat:"19:30",fiyat:180,tur:"Sinema"},
+  {ad:"Stand-up: Gece Nobeti",yer:"Cermodern",sehir:"Ankara",tarih:"29 Eki 2026",saat:"21:00",fiyat:290,tur:"Sahne"}
+];
+let sec=null;
+function ciz(){
+  const s=sehir.value;
+  box.innerHTML=E.map((e,i)=>({e,i})).filter(x=>s==="Tumu"||x.e.sehir===s).map(({e,i})=>`<article class="card"><div class="tag">${e.tur} - ${e.sehir}</div><h3 style="margin:8px 0 4px">${e.ad}</h3><p class="sub">${e.yer} - ${e.tarih} - ${e.saat}</p><div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center"><span class="price">${e.fiyat?e.fiyat.toLocaleString("tr-TR")+" TL":"Ucretsiz"}</span><button class="btn pri" onclick="al(${i})">${e.fiyat?"Bilet al":"Kayit ol"}</button></div></article>`).join("");
+}
+function al(i){sec=E[i]; mt.textContent=sec.ad; md.textContent=sec.yer+" - "+sec.tarih; adet.value="1"; top.textContent=(sec.fiyat||0).toLocaleString("tr-TR")+" TL"; ok.textContent=""; m.classList.remove("hidden"); adet.onchange=()=>top.textContent=((sec.fiyat||0)*+adet.value).toLocaleString("tr-TR")+" TL"}
+function kapat(){m.classList.add("hidden")}
+function onay(){ok.textContent="Rezervasyon kodu PS-"+Math.random().toString(36).slice(2,8).toUpperCase()+" - odeme yok, demo."}
+ciz();
+</script></body></html>

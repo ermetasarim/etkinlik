@@ -1,2 +1,2 @@
-# etkinlik
-Etkinlik ve bilet vitrini
+# Etkinlik
+https://ermetasarim.github.io/etkinlik/
